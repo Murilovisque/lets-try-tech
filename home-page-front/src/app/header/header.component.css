@@ -1,0 +1,23 @@
+header {
+    background-color: white;
+    width: 100%;
+    position: relative;
+}
+
+nav ul {
+    bottom: 0;
+    right: 0;
+    position: absolute;
+}
+
+li {
+    display: inline;
+    margin: 0 20px;
+}
+
+a {
+    font-family: 'Roboto';
+    text-decoration: none;
+    color: #92C186;
+    font-weight: bold;
+}
