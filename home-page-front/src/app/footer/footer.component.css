@@ -4,3 +4,15 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
+img {
+    margin: 10px;
+}
+
+p {
+    display: inline;
+    text-align: center;
+    position: absolute;
+    top: 40%;
+    color: #92C186;
+}
