@@ -4,15 +4,16 @@ header {
     position: relative;
 }
 
-nav ul {
+ul {
     bottom: 10px;
     right: 0;
     position: absolute;
+    width: 60%;
 }
 
 li {
-    display: inline;
-    margin-right: 400px;
+    margin: auto 10%;
+    float: right;
 }
 
 a {
