@@ -6,7 +6,7 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ```
 docker build -t home-page-front extras/docker/
-docker run -it -v $(pwd):/home-page-front -u`id -u`:`id -g` --rm --net=host --name home-page-front home-page-front
+docker run -it -v $(pwd):/home-page-front -e us_id=`id -u` -e gr_id=`id -g` --rm --net=host --name home-page-front home-page-front
 ```
 
 ## Development server
