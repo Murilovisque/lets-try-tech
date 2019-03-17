@@ -1,0 +1,22 @@
+p, h2 {
+    color: #92C186;
+    font-family: 'Roboto';
+    margin: 1em;
+    font-size: 1.5em; 
+}
+
+h2 {
+    margin: 1em;    
+    font-weight: bold;
+    font-size: 1.5em; 
+    text-align: center;
+}
+
+section {
+    border-radius: 15px;
+    background-color: white;
+    width: 30%;
+    margin: 1.6% 1.6%;
+    display: inline-block;
+    
+}
