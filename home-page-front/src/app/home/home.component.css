@@ -1,12 +1,22 @@
 p, h2 {
     color: #92C186;
-    font-family: 'Roboto';
-    margin: 1em;
+    font-family: 'Roboto';    
     font-size: 1.5em; 
 }
 
+p {
+    display: inline-block;
+    width: 40%;
+    margin: 1em;
+}
+
+img {
+    width: 40%;
+    margin: auto 1em;
+}
+
 h2 {
-    margin: 1em;    
+    margin-top: 1em;    
     font-weight: bold;
     font-size: 1.5em; 
     text-align: center;
@@ -17,6 +27,7 @@ section {
     background-color: white;
     width: 30%;
     margin: 1.6% 1.6%;
-    display: inline-block;
-    
+    float: left;
+    width: 35em;
+    height: 23em;    
 }

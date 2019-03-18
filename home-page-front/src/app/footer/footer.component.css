@@ -1,18 +1,17 @@
 footer {
     background-color: white;
-    position: absolute;
-    bottom: 0;
+    display: inline-block;
     width: 100%;
 }
 
 img {
-    margin: 10px;
+    margin: 0.5em;
+    width: 5em;
 }
 
 p {
-    display: inline;
-    text-align: center;
-    position: absolute;
-    top: 40%;
     color: #92C186;
+    display: inline;
+    vertical-align: 50%;
+    font-family: 'Roboto';
 }

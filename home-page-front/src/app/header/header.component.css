@@ -4,8 +4,13 @@ header {
     position: relative;
 }
 
+img {
+    height: 100%;
+    width: 40%;
+}
+
 ul {
-    bottom: 10px;
+    bottom: 1em;
     right: 0;
     position: absolute;
     width: 60%;
