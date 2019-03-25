@@ -7,27 +7,32 @@ p, h2 {
 p {
     display: inline-block;
     width: 40%;
-    margin: 1em;
+    margin: auto 1em;
+    line-height: 1.4em;
 }
 
 img {
     width: 40%;
-    margin: auto 1em;
+    height: 80%;
+    margin: auto 0.5em;
 }
 
 h2 {
     margin-top: 1em;    
     font-weight: bold;
-    font-size: 1.5em; 
     text-align: center;
 }
 
 section {
     border-radius: 15px;
     background-color: white;
-    width: 30%;
-    margin: 1.6% 1.6%;
+    margin: 1.6% 6%;
     float: left;
-    width: 35em;
-    height: 23em;    
+    width: 45em;
+    height: 23em;
+    position: a;
+}
+
+strong {
+    font-weight: bolder;
 }

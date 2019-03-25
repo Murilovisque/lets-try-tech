@@ -7,11 +7,12 @@ footer {
 img {
     margin: 0.5em;
     width: 5em;
+    height: 2.5em;
 }
 
 p {
     color: #92C186;
     display: inline;
-    vertical-align: 50%;
+    vertical-align: 100%;
     font-family: 'Roboto';
 }
