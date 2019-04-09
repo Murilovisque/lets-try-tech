@@ -2,16 +2,32 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.3.4.
 
-## Build with docker
+## Criar o ambiente via docker
 
+Executar os comandos abaixo para iniciar o container em background
 ```
 docker build -t home-page-front extras/docker/
-docker run -it -v $(pwd):/home-page-front -e us_id=`id -u` -e gr_id=`id -g` --rm --net=host --name home-page-front home-page-front
+docker run -d -v $(pwd):/home-page-front -e us_id=`id -u` -e gr_id=`id -g` --rm --net=host --name home-page-front home-page-front
 ```
 
-## Development server
+## Acessar o container docker
+```
+docker exec -it home-page-front bash
+```
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Executar o servidor em modo desenvolvimento
+
+Dentro do container execute o comando abaixo para disponibilizar a aplicação no link `http://localhost:4200/`. Alterações irá automaticamente regarregar o projeto
+```
+ng serve
+```
+
+## Gerar o pacote do projeto
+
+Executar o comando abaixo no container docker. Irá gerar os arquivos na pasta 'dist/'
+```
+ng build --prod
+```
 
 ## Code scaffolding
 
