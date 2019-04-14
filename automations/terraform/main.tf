@@ -4,8 +4,12 @@ provider "google" {
     zone = "us-east1-b"
 }
 
-resource "google_compute_instance" "vm_home-page" {
-    name = "home-page"
+resource "google_compute_address" "ip_vm_home_page" {
+  name = "ip_home_page"
+}
+
+resource "google_compute_instance" "vm_home_page" {
+    name = "home page"
     machine_type = "f1-micro"
     zone = "us-east1-b"
     
@@ -16,6 +20,8 @@ resource "google_compute_instance" "vm_home-page" {
     }
     network_interface {
         network = "default"
-        access_config = {}
+        access_config = {
+            nat_ip = "${google_compute_address.ip_vm_home_page.address}"
+        }
     }
 }
