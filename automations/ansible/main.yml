@@ -1,0 +1,31 @@
+---
+- name: Home Page Automation
+  hosts: vm_home_page
+  become: yes
+  tasks:
+  - block:
+    - name: Front-end - nginx - install
+      apt: name=nginx state=present
+    - name: Front-end - nginx - remove sites-enabled
+      file: path=/etc/nginx/sites-enabled state=absent
+    - name: Front-end - nginx - remove sites-available
+      file: path=/etc/nginx/sites-available state=absent
+    - name: Front-end - nginx - created sites-enabled
+      file: path=/etc/nginx/sites-enabled state=directory mode=0755
+    - name: Front-end - nginx - copy home-page config to sites-available
+      copy: src=../nginx/sites-available dest=/etc/nginx
+    - name: Front-end - nginx - generate link to sites-enabled
+      file: src=/etc/nginx/sites-available/home-page dest=/etc/nginx/sites-enabled/home-page state=link
+      notify: "restart nginx"
+    tags: [nginx]
+  - block:
+    - name: Project - create directory
+      file: path=/opt/ltt state=directory mode=0755
+    - name: Project - remove directory
+      file: path=/opt/ltt/home-page-front state=absent    
+    - name: Front-end - project - copy pages
+      copy: src=../../home-page-front/dist/home-page-front dest=/opt/ltt 
+    tags: [home-page-front]
+  handlers:
+  - name: restart nginx
+    service: name=nginx state=restarted
