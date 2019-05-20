@@ -16,8 +16,23 @@
       copy: src=../nginx/sites-available dest=/etc/nginx
     - name: Front-end - nginx - generate link to sites-enabled
       file: src=/etc/nginx/sites-available/home-page dest=/etc/nginx/sites-enabled/home-page state=link
-      notify: "restart nginx"
+      notify: "restart nginx"    
     tags: [nginx]
+
+  - block:
+    - name: Front-end - certbot - register source repository
+      apt_repository:
+        repo: deb http://deb.debian.org/debian stretch-backports main
+        state: present
+    - name: Front-end - certbot - install
+      apt: name={{item}} state=present update_cache=yes default_release=stretch-backports
+      with_items:
+        - certbot
+        - python-certbot-nginx
+    - name: Front-end - certbot - install certificate in nginx
+      shell: certbot --nginx certonly -m murilo.arantess@gmail.com --agree-tos -d letstrytech.com -n
+    tags: [nginx-certificate]
+
   - block:
     - name: Project - create directory
       file: path=/opt/ltt state=directory mode=0755
