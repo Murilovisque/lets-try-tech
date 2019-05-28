@@ -1,0 +1,12 @@
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	root /opt/ltt/home-page-front;
+	index index.html index.htm;
+	server_name letstrytech.com www.letstrytech.com;
+
+	location / {
+		try_files $uri $uri/ /index.html;
+	}
+}

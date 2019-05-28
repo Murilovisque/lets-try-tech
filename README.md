@@ -12,13 +12,13 @@ Executar os passos da seção "Gerar o pacote do projeto" descritos no README.md
 
 Executar os comandos abaixo na raiz do repositório para iniciar o container em background. O projeto estará disponível acessando o link http://localhost
 ```
-docker build -t home-page-stage automations/docker/
-docker run -d --net=host --rm -v $(pwd)/automations/docker:/home-page-stage/docker -v $(pwd)/automations/nginx:/home-page-stage/nginx -v $(pwd)/home-page-front/dist/home-page-front:/opt/ltt/home-page-front --name home-page-stage home-page-stage
+docker build -t home-page-stg automations/stg/docker/
+docker run -d --net=host --rm -v $(pwd)/automations/stg/docker:/home-page-stg/docker -v $(pwd)/automations/stg/nginx:/home-page-stg/nginx -v $(pwd)/home-page-front/dist/home-page-front:/opt/ltt/home-page-front --name home-page-stg home-page-stg
 ```
 
 ## Acessar o container docker
 ```
-docker exec -it home-page-stage bash
+docker exec -it home-page-stg bash
 ```
 
 ## Provisionar o ambiente de produção
@@ -29,7 +29,7 @@ Necessário ter a variável de ambiente GOOGLE_CLOUD_KEYFILE_JSON configurado pa
 
 Executar os comandos abaixo na raiz do repositório para gerar uma instância onde irá rodar os projetos do home page front-end e back-end
 ```
-cd automations/terraform
+cd automations/prod/terraform
 terraform init
 terraform apply
 ```
@@ -40,7 +40,7 @@ Necessário ter configurado o acesso via SSH para o host da infraestrutura criad
 
 Execute os comandos abaixo na raiz do repositório para configurar as instâncias para execução do projeto
 ```
-cd automations/ansible
+cd automations/prod/ansible
 TEMP_DIR=`mktemp -d`; terraform-inventory --inventory ../terraform/ > $TEMP_DIR/inventory; ansible-playbook -i $TEMP_DIR/inventory main.yml; rm -rf $TEMP_DIR;
 ```
 
@@ -50,7 +50,7 @@ Caso queira rodar somente uma parte da automação de configuração das instân
 * home-page-fron -> Faz a instalação e configuração do projeto home-page-front
 
 ```
-cd automations/ansible
+cd automations/prod/ansible
 TEMP_DIR=`mktemp -d`; terraform-inventory --inventory ../terraform/ > $TEMP_DIR/inventory; ansible-playbook -i $TEMP_DIR/inventory --tags "nginx" main.yml; rm -rf $TEMP_DIR;
 ```
 
@@ -58,6 +58,6 @@ TEMP_DIR=`mktemp -d`; terraform-inventory --inventory ../terraform/ > $TEMP_DIR/
 
 Execute os comandos abaixo na raiz do repositório
 ```
-cd automations/terraform
+cd automations/prod/terraform
 terraform destroy
 ``` 

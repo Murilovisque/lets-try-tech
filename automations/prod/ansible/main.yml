@@ -39,7 +39,7 @@
     - name: Project - remove directory
       file: path=/opt/ltt/home-page-front state=absent    
     - name: Front-end - project - copy pages
-      copy: src=../../home-page-front/dist/home-page-front dest=/opt/ltt 
+      copy: src=../../../home-page-front/dist/home-page-front dest=/opt/ltt 
     tags: [home-page-front]
   handlers:
   - name: restart nginx
