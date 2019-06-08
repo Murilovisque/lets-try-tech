@@ -30,7 +30,7 @@
         - certbot
         - python-certbot-nginx
     - name: Front-end - certbot - install certificate in nginx
-      shell: certbot --nginx certonly -m murilo.arantess@gmail.com --agree-tos -d letstrytech.com -n
+      shell: certbot --nginx certonly -m {{ email }} --agree-tos -d letstrytech.com -n
     tags: [nginx-certificate]
 
   - block:

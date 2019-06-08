@@ -38,20 +38,21 @@ terraform apply
 
 Necessário ter configurado o acesso via SSH para o host da infraestrutura criado no passo anterior
 
-Execute os comandos abaixo na raiz do repositório para configurar as instâncias para execução do projeto
+Execute os comandos abaixo na raiz do repositório para configurar as instâncias para execução do projeto. É necessário ter a variável ${EMAIL} preenchida
 ```
 cd automations/prod/ansible
-TEMP_DIR=`mktemp -d`; terraform-inventory --inventory ../terraform/ > $TEMP_DIR/inventory; ansible-playbook -i $TEMP_DIR/inventory main.yml; rm -rf $TEMP_DIR;
+TEMP_DIR=`mktemp -d`; terraform-inventory --inventory ../terraform/ > $TEMP_DIR/inventory; ansible-playbook -i $TEMP_DIR/inventory main.yml --extra-vars "email=${EMAIL}"; rm -rf $TEMP_DIR;
 ```
 
-Caso queira rodar somente uma parte da automação de configuração das instâncias basta informar quais tags devem ser executadas:
+Caso queira rodar somente uma parte da automação de configuração das instâncias basta informar quais tags devem ser executadas. É necessário ter a variável ${EMAIL} preenchida:
 
-* nginx -> Faz a instalação e configuração do nginx
-* home-page-fron -> Faz a instalação e configuração do projeto home-page-front
+* nginx -> Instala e configuração do nginx
+* nginx-certificate -> Instala o certbot e os certificados do nginx
+* home-page-front -> Instala e configuração do projeto home-page-front
 
 ```
 cd automations/prod/ansible
-TEMP_DIR=`mktemp -d`; terraform-inventory --inventory ../terraform/ > $TEMP_DIR/inventory; ansible-playbook -i $TEMP_DIR/inventory --tags "nginx" main.yml; rm -rf $TEMP_DIR;
+TEMP_DIR=`mktemp -d`; terraform-inventory --inventory ../terraform/ > $TEMP_DIR/inventory; ansible-playbook -i $TEMP_DIR/inventory --tags "nginx" main.yml --extra-vars "email=${EMAIL}"; rm -rf $TEMP_DIR;
 ```
 
 ### Destruindo a infraestrutura
