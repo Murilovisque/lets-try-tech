@@ -1,15 +1,7 @@
-section {
-    border-radius: 15px;
-    background-color: white;
-    margin: 1.6% 6%;
-    float: left;
-    width: 45em;
-    height: 23em;
-    position: a;
-}
-
 img {
-    width: 40%;
-    height: 80%;
-    margin: auto 0.5em;
+    border-radius: 15px;
+    width: 50em;
+    height: 45em;
+    margin: 1.6% 4%;
+    float: left;
 }

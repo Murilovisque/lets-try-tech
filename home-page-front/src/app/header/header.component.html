@@ -1,11 +1,13 @@
 <header>
   <h1>
-    <img src="assets/images/logo-txt.png" alt="Let's try Technology" />
+    <a [routerLink]="" (click)="linkHomePage()">
+      <img src="assets/images/logo-txt.png" alt="Let's try Technology" />
+    </a>
   </h1>
   <nav>
     <ul>
       <li><a [routerLink]="" (click)="linkMembersPage()">Membros</a></li>
-      <li><a [routerLink]="">Fale Conosco</a></li>
+      <li><a [routerLink]="" (click)="linkContactUs()">Contato</a></li>
     </ul>
   </nav>
 </header>

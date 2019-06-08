@@ -16,6 +16,14 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {}
 
   linkMembersPage(): void {
-    Pages.navigateToMembersPage(this.router);
+    Pages.navigateToMembersPage(this.router)
+  }
+
+  linkHomePage(): void {
+    Pages.navigateToHomePage(this.router)
+  }
+
+  linkContactUs(): void {
+    Pages.navigateToContactUs(this.router);
   }
 }

@@ -1,0 +1,55 @@
+input, label, h2, textarea, button {
+    font-family: 'Roboto';
+    font-weight: bold;
+}
+
+input, label, h2, textarea {
+    color: #92C186;    
+}
+
+label {
+    float: left;
+    width: 90%;
+    margin: 5% 5% 0% 5%;
+}
+
+input {
+    width: 90%;
+    background: linear-gradient(to right, #92C186, #92C186) 0.313em calc(100% - 0.313em)/calc(100% - 0.625em) 0.2em no-repeat;
+    border: 0;
+    padding: 0.7em;
+}
+
+textarea {
+    width: 89%;
+    height: 10em;
+    margin-top: 5%;
+    border-radius: 15px;
+    border: 0.15em solid #92C186;
+    padding: 1em;
+}
+
+h2 {    
+    font-size: 1.5em; 
+    text-align: center;
+}
+
+section {
+    border-radius: 15px;
+    background-color: white;
+    width: 20em;
+    height:31.3em;
+    margin: 1.6% 2%;
+    padding-top: 1em;
+}
+
+button {
+    border-radius: 15px;
+    background-color: #1DADEE;
+    border: 0;
+    width: 44%;
+    height: 2em;
+    margin: 5% 2.75% 0% 2.75%;
+    font-size: 1.1em;
+    color: white;   
+}
