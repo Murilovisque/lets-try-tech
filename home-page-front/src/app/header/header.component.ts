@@ -9,6 +9,8 @@ import { Pages } from '../pages';
 })
 export class HeaderComponent implements OnInit {
 
+  showContactUsPage = false
+
   constructor(
     private router: Router
   ) { }
@@ -24,6 +26,10 @@ export class HeaderComponent implements OnInit {
   }
 
   linkContactUs(): void {
-    Pages.navigateToContactUs(this.router);
+    this.showContactUsPage = true
+  }
+
+  onCloseContactUsPage() : void {
+    this.showContactUsPage = false
   }
 }
