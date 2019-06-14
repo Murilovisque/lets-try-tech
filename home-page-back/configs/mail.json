@@ -1,0 +1,6 @@
+{
+    "smtpServerHost": "%smtpServerHost%",
+	"smtpServerPort": %smtpServerPort%,
+	"contactTeamEmail": "%contactTeamEmail%",
+	"contactTeamPassword": "%contactTeamPassword%"
+}
