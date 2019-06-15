@@ -1,7 +1,5 @@
 package mail
 
-//"github.com/Murilovisque/lets-try-tech/home-page-back/internal/platform"
-
 import (
 	"github.com/Murilovisque/lets-try-tech/home-page-back/internal/platform"
 )

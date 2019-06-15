@@ -98,8 +98,10 @@ func ContactUsMessageReceived(name string, tel uint, email, message string) erro
 
 func Shutdown() {
 	shutdownSignalReceived = true
+	log.Println("Finalizing the application...")
 	processCounter.WaitForProcessesToComplete()
 	customer.Shutdown()
+	log.Println("Application finalized")
 }
 
 type ErrApp struct {

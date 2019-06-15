@@ -2,6 +2,7 @@ package customer
 
 import (
 	"database/sql"
+	"log"
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/pkg/errors"
@@ -11,7 +12,7 @@ var db *sql.DB
 
 // Setup database
 func Setup() error {
-	const dbPath = "/opt/ltt/home-page-back/dbs/home-page-back.db"
+	const dbPath = "/opt/ltt/home-page-back/dbs/home-page.db"
 	var err error
 	db, err = sql.Open("sqlite3", dbPath)
 	if err != nil {
@@ -20,7 +21,11 @@ func Setup() error {
 	if err = db.Ping(); err != nil {
 		return errors.Wrapf(err, "Error ping database %s", dbPath)
 	}
-	return errors.Wrap(createTable(), "Error create table customer_message")
+	if err = createTable(); err != nil {
+		return errors.Wrap(err, "Error create table customer_message")
+	}
+	log.Println("Customer service set up!")
+	return nil
 }
 
 func AddCustomerMessage(c *CustomerMessage) error {

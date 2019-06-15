@@ -17,7 +17,7 @@ func main() {
 		os.Exit(1)
 		return
 	}
-	stopSignal := make(chan os.Signal)
+	stopSignal := make(chan os.Signal, 1)
 	signal.Notify(stopSignal, syscall.SIGTERM)
 	signal.Notify(stopSignal, syscall.SIGINT)
 	signal.Notify(stopSignal, os.Interrupt)
@@ -25,6 +25,7 @@ func main() {
 	for {
 		select {
 		case <-stopSignal:
+			log.Println("Shutdown signal received")
 			app.Shutdown()
 			os.Exit(0)
 			return
