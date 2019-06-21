@@ -1,4 +1,4 @@
-package customer
+package customers
 
 import (
 	"database/sql"
@@ -56,16 +56,26 @@ func RemoveCustomerMessage(c *CustomerMessage) error {
 	return err
 }
 
-func OldestCustomerMessage() (*CustomerMessage, error) {
-	var c CustomerMessage
-	row := db.QueryRow("select id, name, tel, email, message from customer_message order by 1 limit 1")
-	err := row.Scan(&c.ID, &c.Name, &c.Tel, &c.Email, &c.Message)
-	if err == nil {
-		return &c, nil
-	} else if err == sql.ErrNoRows {
-		return nil, nil
+func OldestCustomerMessages() ([]CustomerMessage, error) {
+	rows, err := db.Query("select id, name, tel, email, message from customer_message")
+	if err != nil {
+		return nil, err
 	}
-	return nil, err
+	defer rows.Close()
+	var customers []CustomerMessage
+	for rows.Next() {
+		var c CustomerMessage
+		err = rows.Scan(&c.ID, &c.Name, &c.Tel, &c.Email, &c.Message)
+		if err != nil {
+			return nil, err
+		}
+		customers = append(customers, c)
+	}
+	err = rows.Err()
+	if err != nil {
+		return nil, err
+	}
+	return customers, err
 }
 
 func createTable() error {

@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # Get all project dependencies
-go get ./...
+go get gotest.tools
+go get github.com/google/go-cmp
+go get github.com/pkg/errors
+go get github.com/mattn/go-sqlite3
 
 # Generate configs
 cp /home-page-back/configs/mail.json /opt/ltt/home-page-back/configs/mail.json
@@ -9,7 +12,6 @@ sed -i "s/%smtpServerHost%/${SMTP_SERVER}/g" /opt/ltt/home-page-back/configs/mai
 sed -i "s/%smtpServerPort%/${SMTP_PORT}/g" /opt/ltt/home-page-back/configs/mail.json
 sed -i "s/%contactTeamEmail%/${EMAIL}/g" /opt/ltt/home-page-back/configs/mail.json
 sed -i "s/%contactTeamPassword%/${PASSWORD}/g" /opt/ltt/home-page-back/configs/mail.json
-export PASSWORD=""
 
 # Generate database
 (echo ".databases"; echo ".quit") | sqlite3 /opt/ltt/home-page-back/dbs/home-page.db

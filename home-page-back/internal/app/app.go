@@ -8,99 +8,101 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Murilovisque/lets-try-tech/home-page-back/internal/customer"
-	"github.com/Murilovisque/lets-try-tech/home-page-back/internal/mail"
+	"github.com/Murilovisque/lets-try-tech/home-page-back/internal/customers"
+	"github.com/Murilovisque/lets-try-tech/home-page-back/internal/mails"
 	"github.com/Murilovisque/lets-try-tech/home-page-back/internal/platform"
 	"github.com/pkg/errors"
 )
 
 var (
-	chProcessContactUsMessage chan *customer.CustomerMessage
-	processCounter            platform.ProcessCounter
-	shutdownSignalReceived    bool
+	chProcessContactUsMessage chan customers.CustomerMessage = make(chan customers.CustomerMessage, 5)
+	processCounter            platform.ProcessCounter        = platform.ProcessCounter{}
+	shutdownMode                                             = true
+	removeCustomerMessage                                    = customers.RemoveCustomerMessage
+	addCustomerMessage                                       = customers.AddCustomerMessage
+	oldestCustomerMessages                                   = customers.OldestCustomerMessages
+	sendMessageToContactTeam                                 = mails.SendMessageToContactTeam
+	setupCustomers                                           = customers.Setup
+	setupMails                                               = mails.Setup
+	shutdownCustomers                                        = customers.Shutdown
 )
 
 func Setup() error {
-	var setups []func() error
-	setups = append(setups, func() error { return customer.Setup() })
-	setups = append(setups, func() error { return mail.Setup() })
-	for _, s := range setups {
-		if err := s(); err != nil {
-			return err
-		}
-	}
-	chProcessContactUsMessage = make(chan *customer.CustomerMessage, 5)
-	processCounter = platform.ProcessCounter{}
-	shutdownSignalReceived = false
+	platform.SetupAll(setupCustomers, setupMails)
+	shutdownMode = false
 	go processContactUsSavedMessage()
-	go processContactUsMessage()
+	go sendContactUsMessages()
 	return nil
 }
 
 func processContactUsSavedMessage() {
 	for {
-		if shutdownSignalReceived {
+		if shutdownMode {
 			break
 		}
-		c, err := customer.OldestCustomerMessage()
+		customers, err := oldestCustomerMessages()
 		if err != nil {
-			log.Printf("OldestCustomerMessage failed. It is going to process contact us message again after %d seconds. Error %v\n", 10, err)
+			log.Printf("OldestCustomerMessages failed. It is going to process contact us message again after %d seconds. Error %v\n", 10, err)
 			time.Sleep(time.Second * 10)
 			continue
 		}
-		if c == nil {
-			break
+		for _, c := range customers {
+			chProcessContactUsMessage <- c
 		}
-		chProcessContactUsMessage <- c
+		break
 	}
 }
 
-func processContactUsMessage() {
+func sendContactUsMessages() {
 	for c := range chProcessContactUsMessage {
-		if shutdownSignalReceived {
-			break
-		}
-		processCounter.IncrementProcess()
-		msg := fmt.Sprintf("Contato do cliente: %s\nEmail: %s\nTelefone: %d\nMensagem: %s", c.Name, c.Email, c.Tel, c.Message)
-		if err := mail.SendMessageToContactTeam(msg); err != nil {
-			log.Printf("SendMessageToContactTeam failed to send %s. Error %v\n", msg, err)
-			processCounter.DecrementProcess()
-			continue
-		}
-		if err := customer.RemoveCustomerMessage(c); err != nil {
-			log.Printf("RemoveCustomerMessage failed to remove %v. Error %v\n", c, err)
-		}
-		processCounter.DecrementProcess()
+		sendMessage(&c)
 	}
 }
 
-func ContactUsMessageReceived(name string, tel uint, email, message string) error {
-	if shutdownSignalReceived {
-		return &ErrApp{http.StatusServiceUnavailable, "Não foi possível processar sua requirição, tente novamente mais tarde"}
+func sendMessage(c *customers.CustomerMessage) {
+	processCounter.IncrementProcess()
+	defer processCounter.DecrementProcess()
+	log.Printf("%s's message will be sent\n", c.Name)
+	msg := fmt.Sprintf("Contato do cliente: %s\nEmail: %s\nTelefone: %d\nMensagem: %s", c.Name, c.Email, c.Tel, c.Message)
+	if err := sendMessageToContactTeam(msg); err != nil {
+		log.Printf("SendMessageToContactTeam failed to send %s. Error %v\n", msg, err)
+		return
+	}
+	if err := removeCustomerMessage(c); err != nil {
+		log.Printf("RemoveCustomerMessage failed to remove %v. Error %v\n", c, err)
+		return
+	}
+	log.Printf("%s's message sent\n", c.Name)
+}
+
+func ProcessContactUsMessageReceived(name string, tel uint, email, message string) error {
+	if shutdownMode {
+		return &ErrApp{http.StatusServiceUnavailable, "Não foi possível processar sua requisição, tente novamente mais tarde"}
 	}
 	processCounter.IncrementProcess()
 	defer processCounter.DecrementProcess()
 	if telLength := len(fmt.Sprint(tel)); strings.TrimSpace(name) == "" || telLength < 10 || telLength > 11 || strings.TrimSpace(message) == "" || !regexp.MustCompile(".+@.+").MatchString(email) {
 		return &ErrApp{http.StatusBadRequest, "Nome, telefone, email ou mensagem inválidos"}
 	}
-	c := customer.CustomerMessage{
+	c := customers.CustomerMessage{
 		Name:    name,
 		Tel:     tel,
 		Email:   email,
 		Message: message,
 	}
-	if err := customer.AddCustomerMessage(&c); err != nil {
-		return errors.Wrapf(err, "customer.AddCustomerMessage failed %v", c)
+	if err := addCustomerMessage(&c); err != nil {
+		return errors.Wrapf(err, "customers.AddCustomerMessage failed %v", c)
 	}
-	chProcessContactUsMessage <- &c
+	log.Printf("%s's message added in sender's queue\n", name)
+	chProcessContactUsMessage <- c
 	return nil
 }
 
 func Shutdown() {
-	shutdownSignalReceived = true
+	shutdownMode = true
 	log.Println("Finalizing the application...")
-	processCounter.WaitForProcessesToComplete()
-	customer.Shutdown()
+	processCounter.WaitForAllProcessesToComplete()
+	shutdownCustomers()
 	log.Println("Application finalized")
 }
 

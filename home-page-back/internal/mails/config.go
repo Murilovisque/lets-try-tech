@@ -1,4 +1,4 @@
-package mail
+package mails
 
 import (
 	"github.com/Murilovisque/lets-try-tech/home-page-back/internal/platform"
