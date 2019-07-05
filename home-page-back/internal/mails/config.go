@@ -7,7 +7,7 @@ import (
 var config mailConfig
 
 func loadConfig() error {
-	const configPath = "/opt/ltt/home-page-back/configs/mail.json"
+	const configPath = "/etc/home-page-back/mail.json"
 	config = mailConfig{}
 	return platform.LoadConfigFromJSONFile(configPath, &config)
 }

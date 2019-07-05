@@ -15,71 +15,87 @@ import (
 )
 
 var (
-	chProcessContactUsMessage chan customers.CustomerMessage = make(chan customers.CustomerMessage, 5)
-	processCounter            platform.ProcessCounter        = platform.ProcessCounter{}
-	shutdownMode                                             = true
-	removeCustomerMessage                                    = customers.RemoveCustomerMessage
-	addCustomerMessage                                       = customers.AddCustomerMessage
-	oldestCustomerMessages                                   = customers.OldestCustomerMessages
-	sendMessageToContactTeam                                 = mails.SendMessageToContactTeam
-	setupCustomers                                           = customers.Setup
-	setupMails                                               = mails.Setup
-	shutdownCustomers                                        = customers.Shutdown
+	sendContactUsMessagesChannel      = make(chan customers.CustomerMessage, 5)
+	retrySendContactUsMessagesChannel = make(chan customers.CustomerMessage, 5)
+	processCounter                    = platform.ProcessCounter{}
+	removeCustomerMessage             = customers.RemoveCustomerMessage
+	addCustomerMessage                = customers.AddCustomerMessage
+	oldestCustomerMessages            = customers.OldestCustomerMessages
+	sendMessageToContactTeam          = mails.SendMessageToContactTeam
+	setupCustomers                    = customers.Setup
+	setupMails                        = mails.Setup
+	shutdownCustomers                 = customers.Shutdown
+	retrySecondsAfterError            = time.Second * 60
 )
 
 func Setup() error {
-	platform.SetupAll(setupCustomers, setupMails)
-	shutdownMode = false
-	go processContactUsSavedMessage()
-	go sendContactUsMessages()
+	if err := platform.SetupAll(setupCustomers, setupMails); err != nil {
+		return err
+	}
+	defaultProcessError := &ErrApp{http.StatusServiceUnavailable, "Não foi possível processar sua requisição, tente novamente mais tarde"}
+	processCounter.Setup(5, defaultProcessError, defaultProcessError)
+	startContactUsSavedMessageProcessor()
+	startContactUsMessagesSender()
 	return nil
 }
 
-func processContactUsSavedMessage() {
-	for {
-		if shutdownMode {
-			break
+func startContactUsSavedMessageProcessor() {
+	go func() {
+		for {
+			customers, err := oldestCustomerMessages()
+			if err != nil {
+				log.Printf("OldestCustomerMessages failed. Retry after %d seconds. Error %v\n", retrySecondsAfterError/time.Second, err)
+				time.Sleep(retrySecondsAfterError)
+				continue
+			}
+			for _, c := range customers {
+				sendContactUsMessagesChannel <- c
+			}
+			return
 		}
-		customers, err := oldestCustomerMessages()
-		if err != nil {
-			log.Printf("OldestCustomerMessages failed. It is going to process contact us message again after %d seconds. Error %v\n", 10, err)
-			time.Sleep(time.Second * 10)
-			continue
-		}
-		for _, c := range customers {
-			chProcessContactUsMessage <- c
-		}
-		break
-	}
+	}()
 }
 
-func sendContactUsMessages() {
-	for c := range chProcessContactUsMessage {
-		sendMessage(&c)
-	}
+func startContactUsMessagesSender() {
+	go func() {
+		for c := range sendContactUsMessagesChannel {
+			if err := sendMessage(&c); err != nil {
+				log.Printf("sendMessage failed. Error %s\n", err)
+				retrySendMessage(c)
+			}
+		}
+	}()
 }
 
-func sendMessage(c *customers.CustomerMessage) {
-	processCounter.IncrementProcess()
+func retrySendMessage(c customers.CustomerMessage) {
+	retrySendContactUsMessagesChannel <- c
+	log.Printf("Retry after %d seconds\n", retrySecondsAfterError/time.Second)
+	time.AfterFunc(retrySecondsAfterError, func() {
+		sendContactUsMessagesChannel <- <-retrySendContactUsMessagesChannel
+	})
+}
+
+func sendMessage(c *customers.CustomerMessage) error {
+	if err := processCounter.IncrementProcess(); err != nil {
+		return err
+	}
 	defer processCounter.DecrementProcess()
 	log.Printf("%s's message will be sent\n", c.Name)
 	msg := fmt.Sprintf("Contato do cliente: %s\nEmail: %s\nTelefone: %d\nMensagem: %s", c.Name, c.Email, c.Tel, c.Message)
 	if err := sendMessageToContactTeam(msg); err != nil {
-		log.Printf("SendMessageToContactTeam failed to send %s. Error %v\n", msg, err)
-		return
+		return errors.Wrapf(err, "SendMessageToContactTeam failed to send %s", msg)
 	}
 	if err := removeCustomerMessage(c); err != nil {
-		log.Printf("RemoveCustomerMessage failed to remove %v. Error %v\n", c, err)
-		return
+		return errors.Wrapf(err, "RemoveCustomerMessage failed to remove %v\n", c)
 	}
 	log.Printf("%s's message sent\n", c.Name)
+	return nil
 }
 
 func ProcessContactUsMessageReceived(name string, tel uint, email, message string) error {
-	if shutdownMode {
-		return &ErrApp{http.StatusServiceUnavailable, "Não foi possível processar sua requisição, tente novamente mais tarde"}
+	if err := processCounter.IncrementProcess(); err != nil {
+		return err
 	}
-	processCounter.IncrementProcess()
 	defer processCounter.DecrementProcess()
 	if telLength := len(fmt.Sprint(tel)); strings.TrimSpace(name) == "" || telLength < 10 || telLength > 11 || strings.TrimSpace(message) == "" || !regexp.MustCompile(".+@.+").MatchString(email) {
 		return &ErrApp{http.StatusBadRequest, "Nome, telefone, email ou mensagem inválidos"}
@@ -94,14 +110,13 @@ func ProcessContactUsMessageReceived(name string, tel uint, email, message strin
 		return errors.Wrapf(err, "customers.AddCustomerMessage failed %v", c)
 	}
 	log.Printf("%s's message added in sender's queue\n", name)
-	chProcessContactUsMessage <- c
+	sendContactUsMessagesChannel <- c
 	return nil
 }
 
 func Shutdown() {
-	shutdownMode = true
 	log.Println("Finalizing the application...")
-	processCounter.WaitForAllProcessesToComplete()
+	processCounter.Shutdown()
 	shutdownCustomers()
 	log.Println("Application finalized")
 }

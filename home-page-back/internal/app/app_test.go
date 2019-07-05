@@ -26,7 +26,7 @@ var (
 	expectedCustomerMessage2     = customers.CustomerMessage{ID: 2, Name: expectedName2, Email: expectedEmail2, Tel: expectedTel2, Message: expectedMessage2}
 	sendMessageToContactTeamArgs []string
 	removeCustomerMessageArgs    []customers.CustomerMessage
-	addCustomerMessageArgs       []customers.CustomerMessage
+	addCustomerMessageArgs       []interface{}
 	timeout                      time.Duration
 	delay                        time.Duration
 )
@@ -48,7 +48,7 @@ func TestContactUsMessageReceivedShouldWorks(t *testing.T) {
 	clearVals()
 }
 
-func TestContactUsSavedMessageShouldWorks(t *testing.T) {
+func TestContactUsMessagesSenderShouldWorks(t *testing.T) {
 	addCustomerMessageArgs = append(addCustomerMessageArgs, expectedCustomerMessage, expectedCustomerMessage2)
 	setupMocks(t)
 	waitUntil(t, func() bool { return len(sendMessageToContactTeamArgs) == 2 }, "Expected 2 call to sendMessageToContactTeam - Timeout")
@@ -57,6 +57,18 @@ func TestContactUsSavedMessageShouldWorks(t *testing.T) {
 	waitUntil(t, func() bool { return len(removeCustomerMessageArgs) == 2 }, "Expected 2 call to removeCustomerMessage - Timeout")
 	assert.DeepEqual(t, removeCustomerMessageArgs[0], expectedCustomerMessage)
 	assert.DeepEqual(t, removeCustomerMessageArgs[1], expectedCustomerMessage2)
+	clearVals()
+}
+
+func TestContactUsMessagesSenderShouldRetry(t *testing.T) {
+	addCustomerMessageArgs = append(addCustomerMessageArgs, &ErrApp{}, expectedCustomerMessage)
+	retrySecondsAfterError = time.Second
+	timeout = time.Second * 2
+	setupMocks(t)
+	waitUntil(t, func() bool { return len(sendMessageToContactTeamArgs) == 1 }, "Expected 1 call to sendMessageToContactTeam - Timeout")
+	assert.Equal(t, sendMessageToContactTeamArgs[0], expectedEmailMessage)
+	waitUntil(t, func() bool { return len(removeCustomerMessageArgs) == 1 }, "Expected 1 call to removeCustomerMessage - Timeout")
+	assert.DeepEqual(t, removeCustomerMessageArgs[0], expectedCustomerMessage)
 	clearVals()
 }
 
@@ -123,7 +135,25 @@ func mockDependenciesFuncs(t *testing.T) {
 	if delay > 0 {
 		timeout += delay
 	}
-	oldestCustomerMessages = func() ([]customers.CustomerMessage, error) { return addCustomerMessageArgs, nil }
+	oldestCustomerMessages = func() ([]customers.CustomerMessage, error) {
+		var cs []customers.CustomerMessage
+		var err error
+		var index int
+		for i, c := range addCustomerMessageArgs {
+			if val, ok := c.(customers.CustomerMessage); ok {
+				cs = append(cs, val)
+			} else {
+				err = c.(error)
+				index = i
+				break
+			}
+		}
+		if err == nil {
+			return cs, nil
+		}
+		addCustomerMessageArgs = addCustomerMessageArgs[index+1:]
+		return nil, err
+	}
 	sendMessageToContactTeam = func(msg string) error {
 		t.Log("sendMessageToContactTeam called with " + msg)
 		sendMessageToContactTeamArgs = append(sendMessageToContactTeamArgs, msg)
@@ -153,9 +183,10 @@ func mockDependenciesFuncs(t *testing.T) {
 func clearVals() {
 	sendMessageToContactTeamArgs = []string{}
 	removeCustomerMessageArgs = []customers.CustomerMessage{}
-	addCustomerMessageArgs = []customers.CustomerMessage{}
+	addCustomerMessageArgs = []interface{}{}
 	timeout = time.Second
 	delay = 0
+	retrySecondsAfterError = time.Second * 60
 }
 
 func waitUntil(t *testing.T, condition func() bool, failMsg string) {

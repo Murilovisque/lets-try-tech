@@ -1,22 +1,48 @@
 package platform
 
-import "sync/atomic"
-
 type ProcessCounter struct {
-	currentProcess int64
+	amountOfProcessChannel   chan struct{}
+	shutdownMode             bool
+	errLimitReached          error
+	errShutdownModeActivated error
 }
 
-func (p *ProcessCounter) IncrementProcess() {
-	atomic.AddInt64(&p.currentProcess, 1)
+func (p *ProcessCounter) Setup(limit int, errorLimitReached, errorShutdownModeActivated error) {
+	p.amountOfProcessChannel = make(chan struct{}, limit)
+	p.errLimitReached = errorLimitReached
+	p.errShutdownModeActivated = errorShutdownModeActivated
+	p.shutdownMode = false
+}
+
+func (p *ProcessCounter) IncrementProcess() error {
+	if p.shutdownMode {
+		return p.errShutdownModeActivated
+	}
+	select {
+	case p.amountOfProcessChannel <- struct{}{}:
+		return nil
+	default:
+		return p.errLimitReached
+	}
 }
 
 func (p *ProcessCounter) DecrementProcess() {
-	atomic.AddInt64(&p.currentProcess, -1)
+	<-p.amountOfProcessChannel
 }
 
-func (p *ProcessCounter) WaitForAllProcessesToComplete() {
+func (p *ProcessCounter) Shutdown() {
+	p.shutdownMode = true
+	close(p.amountOfProcessChannel)
+	p.waitForAllProcessesToComplete()
+}
+
+func (p *ProcessCounter) IsUp() bool {
+	return !p.shutdownMode
+}
+
+func (p *ProcessCounter) waitForAllProcessesToComplete() {
 	for {
-		if atomic.LoadInt64(&p.currentProcess) == 0 {
+		if len(p.amountOfProcessChannel) == 0 {
 			break
 		}
 	}

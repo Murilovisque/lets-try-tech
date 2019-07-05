@@ -12,16 +12,18 @@ import (
 
 var (
 	srv                    http.Server
-	shutdownSignalReceived chan struct{} = make(chan struct{}, 1)
-	shutdownFinished       chan struct{} = make(chan struct{}, 1)
+	shutdownSignalReceived = make(chan struct{}, 1)
+	shutdownFinished       = make(chan struct{}, 1)
 )
 
 func Setup() error {
 	go func() {
 		<-shutdownSignalReceived
+		log.Println("Finalizing HTTP routes")
 		if err := srv.Close(); err != nil {
 			log.Println(err)
 		}
+		log.Println("HTTP routes finalized")
 		shutdownFinished <- struct{}{}
 	}()
 	srv = http.Server{
@@ -51,9 +53,11 @@ func Setup() error {
 		w.WriteHeader(http.StatusOK)
 	})
 	go func() {
+		log.Println("Starting HTTP routes")
 		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
 			log.Printf("HTTP server ListenAndServe: %v", err)
 		}
+		log.Println("HTTP routes started")
 	}()
 	return nil
 }
@@ -89,7 +93,7 @@ func canGetJSONBody(w http.ResponseWriter, r *http.Request, jsonType interface{}
 func respondInternalError(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusInternalServerError)
 	w.Header().Set("Content-Type", "text/plain")
-	fmt.Fprint(w, "Não foi possível processar a requisição")
+	fmt.Fprint(w, "Não foi possível processar sua requisição, tente novamente mais tarde")
 }
 
 func respondErrorFromApp(err error, w http.ResponseWriter) {
