@@ -5,7 +5,7 @@ RUN apt install sqlite3 -y
 RUN mkdir -p /opt/ltt/home-page-back/configs/
 RUN mkdir -p /opt/ltt/home-page-back/dbs/
 RUN mkdir -p /etc/home-page-back
-RUN mkdir -p /var/log/home-page-back
+RUN mkdir -p /var/log/home-page-back/archive
 RUN rm -r /go/src/
 WORKDIR /home-page-back
 

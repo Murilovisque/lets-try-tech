@@ -8,5 +8,7 @@ ln -s /etc/nginx/sites-available/home-page /etc/nginx/sites-enabled/home-page
 
 service nginx start
 
+dpkg -i /home-page-stg/home-page-back/home-page-back.deb
+
 nc -l 666
 exec "$@"

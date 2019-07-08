@@ -1,0 +1,12 @@
+/var/log/home-page-back/home-page* {
+    daily
+    minage 2
+    ifempty
+    compress
+    olddir /var/log/home-page-back/archive    
+}
+
+/var/log/home-page-back/archive/home-page* {
+    daily
+    maxage 15
+}

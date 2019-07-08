@@ -29,9 +29,15 @@ cd /home-page-back
 go test ./...
 ```
 
-## Estrutra do projeto
+## Estrutura do projeto
 
 A estrutura do projeto se baseia nos padrões abaixo
 
 * https://www.ardanlabs.com/blog/2017/02/package-oriented-design.html
 * https://github.com/golang-standards/project-layout
+
+## Gerar um pacote debian do projeto. Deve ser executado dentro do container do Docker. O arquivo será gerado na pasta 'build/package/debian/target'
+```
+cd /home-page-back/build/package/debian/
+./build.sh
+```
