@@ -12,8 +12,8 @@ import (
 
 var (
 	srv                    http.Server
-	shutdownSignalReceived = make(chan struct{}, 1)
-	shutdownFinished       = make(chan struct{}, 1)
+	shutdownSignalReceived = make(chan struct{})
+	shutdownFinished       = make(chan struct{})
 )
 
 func Setup() error {
@@ -57,7 +57,6 @@ func Setup() error {
 		if err := srv.ListenAndServe(); err != http.ErrServerClosed {
 			log.Printf("HTTP server ListenAndServe: %v", err)
 		}
-		log.Println("HTTP routes started")
 	}()
 	return nil
 }

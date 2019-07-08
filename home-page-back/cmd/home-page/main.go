@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"io/ioutil"
 	"log"
 	"os"
 	"os/signal"
@@ -11,16 +9,15 @@ import (
 	"github.com/Murilovisque/lets-try-tech/home-page-back/cmd/home-page/routes"
 	"github.com/Murilovisque/lets-try-tech/home-page-back/internal/app"
 	"github.com/Murilovisque/lets-try-tech/home-page-back/internal/platform"
-	lumberjack "gopkg.in/natefinch/lumberjack.v2"
+	"github.com/Murilovisque/logs"
 )
 
 func main() {
 	setupLog()
 	log.Println("Starting Home-page-back...")
-	if err := platform.SetupAll(setupLog, app.Setup, routes.Setup); err != nil {
+	if err := platform.SetupAll(app.Setup, routes.Setup); err != nil {
 		log.Printf("Home-page-back loading failed...\n%s", err.Error())
 		os.Exit(1)
-		return
 	}
 	stopSignal := make(chan os.Signal, 1)
 	signal.Notify(stopSignal, syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
@@ -32,23 +29,19 @@ func main() {
 			app.Shutdown()
 			routes.Shutdown()
 			log.Println("Shutdown success!")
+			logs.Shutdown()
 			os.Exit(0)
-			return
 		default:
 		}
 	}
 }
 
-func setupLog() error {
-	const logConfigPath = "/etc/home-page-back/log.json"
-	var ljLog lumberjack.Logger
-	b, err := ioutil.ReadFile(logConfigPath)
+func setupLog() {
+	const logPath = "/var/log/home-page-back/home-page"
+	err := logs.SetupPerDay(logPath, 10)
 	if err != nil {
-		return err
+		log.Printf("Home-page-back loading failed...\n%s", err.Error())
+		os.Exit(1)
 	}
-	if err = json.Unmarshal(b, &ljLog); err != nil {
-		return err
-	}
-	log.SetOutput(&ljLog)
-	return nil
+
 }

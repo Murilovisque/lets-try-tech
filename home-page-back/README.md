@@ -15,6 +15,20 @@ Executar o comando abaixo para iniciar o container em background na raiz do proj
 docker exec -it home-page-back bash
 ```
 
+## Compilar e gerar o executável do projeto
+
+Executar o comando abaixo no container docker. Irá gerar um arquivo executável de nome 'home-page'
+```
+cd /home-page-back/cmd/home-page
+go build
+```
+
+## Executar os testes
+```
+cd /home-page-back
+go test ./...
+```
+
 ## Estrutra do projeto
 
 A estrutura do projeto se baseia nos padrões abaixo

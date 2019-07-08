@@ -1,0 +1,40 @@
+{
+	"info": {
+		"_postman_id": "11cdadec-45bc-44d3-8b15-78e323bc7f95",
+		"name": "lets try tech - home-page",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "customer - contact us",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Murilo\",\n\t\"tel\": 1322334455,\n\t\"email\": \"murilo@domain\",\n\t\"message\": \"i have a job for you\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/customers/contact-message",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"customers",
+						"contact-message"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
