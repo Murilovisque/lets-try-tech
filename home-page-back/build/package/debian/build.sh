@@ -23,14 +23,14 @@ mkdir -pv "${BASE_DIR}/lib/systemd/system"
 cp -v /home-page-back/build/package/debian/home-page-back.service "${BASE_DIR}/lib/systemd/system"
 
 mkdir -pv "${BASE_DIR}/etc/home-page-back"
-mkdir -pv "${BASE_DIR}/etc/logrotate.d"
+mkdir -pv "${BASE_DIR}/etc/cron.daily"
 mkdir -pv "${BASE_DIR}/var/log/home-page-back/archive"
 mkdir -pv "${BASE_DIR}/opt/ltt/home-page-back"
 mkdir -pv "${BASE_DIR}/etc/init.d"
 
 cp -v /home-page-back/build/package/debian/home-page-back.sh "${BASE_DIR}/etc/init.d/home-page-back"
 cp -v /home-page-back/cmd/home-page-back/home-page-back "${BASE_DIR}/opt/ltt/home-page-back"
-cp -v /home-page-back/configs/logrotate/home-page-back "${BASE_DIR}/etc/logrotate.d"
+cp -v /home-page-back/configs/cron/home-page-back "${BASE_DIR}/etc/cron.daily"
 
 chmod +x ${BASE_DIR}/etc/init.d/home-page-back
 

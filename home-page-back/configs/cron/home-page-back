@@ -1,0 +1,3 @@
+#!/bin/sh
+
+/usr/bin/find /var/log/home-page-back/ -name *.log -mtime +2 -exec mv {} /var/log/home-page-back/archive/ \; && /usr/bin/find /var/log/home-page-back/archive/ -name *.log -exec gzip {} \; && /usr/bin/find /var/log/home-page-back/archive/ -name *.gz -mtime +20 -exec rm {} \;
