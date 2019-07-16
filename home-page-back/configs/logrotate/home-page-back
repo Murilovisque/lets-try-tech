@@ -1,7 +1,7 @@
 /var/log/home-page-back/home-page* {
     daily
     minage 2
-    ifempty
+    notifempty
     compress
     olddir /var/log/home-page-back/archive    
 }

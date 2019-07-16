@@ -12,8 +12,7 @@ Executar os passos da seção "Gerar o pacote do projeto" descritos no README.md
 
 Executar os comandos abaixo na raiz do repositório para iniciar o container em background. O projeto estará disponível acessando o link http://localhost
 ```
-docker build -t home-page-stg automations/stg/docker/
-docker run -d --net=host --rm -v $(pwd)/automations/stg/docker:/home-page-stg/docker -v $(pwd)/automations/stg/nginx:/home-page-stg/nginx -v $(pwd)/home-page-front/dist/home-page-front:/opt/ltt/home-page-front --name home-page-stg home-page-stg
+./automations/stg/docker/run_docker.sh
 ```
 
 ## Acessar o container docker

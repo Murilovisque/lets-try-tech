@@ -8,7 +8,14 @@ ln -s /etc/nginx/sites-available/home-page /etc/nginx/sites-enabled/home-page
 
 service nginx start
 
-dpkg -i /home-page-stg/home-page-back/home-page-back.deb
+(echo ".databases"; echo ".quit") | sqlite3 /var/lib/ltt/home-page-back/dbs/home-page.db
+dpkg -i /home-page-stg/home-page-back/debian/home-page-back.deb
 
-nc -l 666
+cp /home-page-stg/home-page-back/configs/mail.json /etc/home-page-back/mail.json
+sed -i "s/%smtpServerHost%/${SMTP_SERVER}/g" /etc/home-page-back/mail.json
+sed -i "s/%smtpServerPort%/${SMTP_PORT}/g" /etc/home-page-back/mail.json
+sed -i "s/%contactTeamEmail%/${EMAIL}/g" /etc/home-page-back/mail.json
+sed -i "s/%contactTeamPassword%/${PASSWORD}/g" /etc/home-page-back/mail.json
+
+sleep infinity
 exec "$@"

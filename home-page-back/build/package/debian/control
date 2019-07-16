@@ -1,5 +1,5 @@
-Package: home-page
+Package: home-page-back
 Version: 1.0
 Maintainer: Murilo
 Architecture: amd64
-Description: Home page API of  the Let's Try Technology
+Description: Home page API of the Let's Try Technology

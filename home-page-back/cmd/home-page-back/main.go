@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/Murilovisque/lets-try-tech/home-page-back/cmd/home-page/routes"
+	"github.com/Murilovisque/lets-try-tech/home-page-back/cmd/home-page-back/routes"
 	"github.com/Murilovisque/lets-try-tech/home-page-back/internal/app"
 	"github.com/Murilovisque/lets-try-tech/home-page-back/internal/platform"
 	"github.com/Murilovisque/logs"

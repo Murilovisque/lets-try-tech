@@ -12,7 +12,7 @@ var db *sql.DB
 
 // Setup database
 func Setup() error {
-	const dbPath = "/opt/ltt/home-page-back/dbs/home-page.db"
+	const dbPath = "/var/lib/ltt/home-page-back/dbs/home-page.db"
 	var err error
 	db, err = sql.Open("sqlite3", dbPath)
 	if err != nil {
