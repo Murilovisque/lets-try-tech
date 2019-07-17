@@ -1,7 +1,14 @@
 #!/bin/bash
 
 start_home_page_back() {
-	/opt/ltt/home-page-back/home-page-back &
+	local proc=$(ps a | grep home-page-back | grep -v " grep " | grep -v "/etc/init.d/home-page-back")
+	if [[ -z $proc ]]; then
+		echo "Starting..."
+		/opt/ltt/home-page-back/home-page-back &
+		echo "Started"
+	else
+		echo "Already running..."
+	fi
 }
 
 stop_home_page_back() {

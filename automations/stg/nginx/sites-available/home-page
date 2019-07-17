@@ -4,9 +4,15 @@ server {
 
 	root /opt/ltt/home-page-front;
 	index index.html index.htm;
-	server_name letstrytech.com www.letstrytech.com;
+	server_name localhost;
 
 	location / {
 		try_files $uri $uri/ /index.html;
+	}
+
+	location /api {
+		rewrite /api/(.*) /$1  break;
+		proxy_pass http://localhost:8080;
+		proxy_redirect     off;
 	}
 }
