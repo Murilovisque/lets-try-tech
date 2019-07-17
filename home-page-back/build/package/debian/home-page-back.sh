@@ -12,7 +12,14 @@ start_home_page_back() {
 }
 
 stop_home_page_back() {
-	ps a | grep home-page-back | grep -v " grep " | awk '{ print $1 }' | head -n 1 | xargs kill
+	local proc=$(ps a | grep home-page-back | grep -v " grep " | grep -v "/etc/init.d/home-page-back")
+	if [[ -z $proc ]]; then
+		echo "Already stopped"
+	else 
+		echo "Stopping..."
+		ps a | grep home-page-back | grep -v " grep " | awk '{ print $1 }' | head -n 1 | xargs kill
+		echo "Stopped"
+	fi
 }
 
 status_home_page_back() {
@@ -38,6 +45,7 @@ case "$1" in
 		exit $?
 		;;
 	restart)
+		stop_home_page_back
 		start_home_page_back
 		exit $?
 		;;

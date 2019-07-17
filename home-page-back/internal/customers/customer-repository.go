@@ -96,6 +96,7 @@ func createTable() error {
 // Shutdown database
 func Shutdown() {
 	db.Close()
+	log.Println("Customer service shutdown")
 }
 
 type CustomerMessage struct {

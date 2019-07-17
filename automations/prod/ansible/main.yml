@@ -18,7 +18,7 @@
       file: src=/etc/nginx/sites-available/home-page dest=/etc/nginx/sites-enabled/home-page state=link
       notify: "restart nginx"    
     tags: [nginx]
-
+    
   - block:
     - name: Front-end - certbot - register source repository
       apt_repository:
@@ -36,11 +36,45 @@
   - block:
     - name: Project - create directory
       file: path=/opt/ltt state=directory mode=0755
-    - name: Project - remove directory
+    - name: Front-end - remove directory
       file: path=/opt/ltt/home-page-front state=absent    
     - name: Front-end - project - copy pages
       copy: src=../../../home-page-front/dist/home-page-front dest=/opt/ltt 
     tags: [home-page-front]
+
+  - block:
+    - name: Project - create directory
+      file: path=/opt/ltt state=directory mode=0755
+    - name: Back-end - Copy deb file
+      copy: src=../../../home-page-back/build/package/debian/target/home-page-back.deb dest=/tmp
+    - name: Back-end - uninstall old package
+      apt: name=home-page-back state=absent
+    - name: Back-end - install package
+      apt: deb=/tmp/home-page-back.deb
+    - name: Remove deb file
+      file: path=/tmp/home-page-back.deb state=absent
+      notify: "restart home-page-back"
+    tags: [home-page-back]
+
+  - block:
+    - name: Back-end - Remove config files
+      file: path=/etc/home-page-back/* state=absent
+    - name: Back-end - Copy configs
+      copy: src=../../../home-page-back/build/package/debian/target/mail.json dest=/etc/home-page-back
+      notify: "restart home-page-back"
+    tags: [home-page-back-configs]
+
+  - block:
+    - name: Back-end - Create databases path
+      file: path=/var/lib/ltt/home-page-back/dbs  state=directory mode=0755
+    - name: Back-end - Remove databases
+      file: path=/var/lib/ltt/home-page-back/dbs/* state=absent
+    - name: Back-end - Copy databases
+      copy: src=../../../home-page-back/build/package/debian/target/home-page.db dest=/var/lib/ltt/home-page-back/dbs
+    tags: [home-page-back-dbs]
+
   handlers:
   - name: restart nginx
     service: name=nginx state=restarted
+  - name: restart home-page-back
+    service: name=home-page-back state=restarted

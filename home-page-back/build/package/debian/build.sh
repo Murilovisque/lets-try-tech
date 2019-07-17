@@ -39,4 +39,11 @@ rm -rfv "${BASE_DIR}"
 mkdir -p ${DEB_TARGET_DIR}
 mv ${DEB_FILE} ${DEB_TARGET_DIR}
 echo "Debian file builded: '${DEB_TARGET_DIR}/home-page-back.deb'"
+
+(echo ".databases"; echo ".quit") | sqlite3 ${DEB_TARGET_DIR}/home-page.db
+echo "Database generated: '${DEB_TARGET_DIR}/home-page.db'"
+
+cp -v /etc/home-page-back/mail.json ${DEB_TARGET_DIR}
+echo "Config file generated: ${DEB_TARGET_DIR}/mail.json"
+
 cd ${currentDir}

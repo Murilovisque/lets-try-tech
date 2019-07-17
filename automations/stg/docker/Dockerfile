@@ -2,7 +2,6 @@ FROM debian:stretch
 RUN apt update
 RUN apt install nginx -y
 RUN apt install vim -y
-RUN apt install sqlite3 -y
 RUN apt install procps -y
 
 RUN mkdir -p /home-page-stg /opt/ltt/

@@ -25,7 +25,7 @@ var (
 	setupCustomers                    = customers.Setup
 	setupMails                        = mails.Setup
 	shutdownCustomers                 = customers.Shutdown
-	retrySecondsAfterError            = time.Second * 60
+	retrySecondsAfterError            = time.Second * 60 * 5
 )
 
 func Setup() error {
@@ -83,7 +83,7 @@ func sendMessage(c *customers.CustomerMessage) error {
 	log.Printf("%s's message will be sent\n", c.Name)
 	msg := fmt.Sprintf("Contato do cliente: %s\nEmail: %s\nTelefone: %d\nMensagem: %s", c.Name, c.Email, c.Tel, c.Message)
 	if err := sendMessageToContactTeam(msg); err != nil {
-		return errors.Wrapf(err, "SendMessageToContactTeam failed to send %s", msg)
+		return errors.Wrapf(err, "SendMessageToContactTeam failed to send %s\n", msg)
 	}
 	if err := removeCustomerMessage(c); err != nil {
 		return errors.Wrapf(err, "RemoveCustomerMessage failed to remove %v\n", c)

@@ -1,5 +1,7 @@
 package platform
 
+import "log"
+
 type ProcessCounter struct {
 	amountOfProcessChannel   chan struct{}
 	shutdownMode             bool
@@ -34,6 +36,7 @@ func (p *ProcessCounter) Shutdown() {
 	p.shutdownMode = true
 	close(p.amountOfProcessChannel)
 	p.waitForAllProcessesToComplete()
+	log.Println("All process finished")
 }
 
 func (p *ProcessCounter) IsUp() bool {
