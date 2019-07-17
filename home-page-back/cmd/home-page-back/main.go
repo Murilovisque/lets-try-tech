@@ -22,18 +22,14 @@ func main() {
 	stopSignal := make(chan os.Signal, 1)
 	signal.Notify(stopSignal, syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
 	log.Println("Home-page-back started!")
-	for {
-		select {
-		case <-stopSignal:
-			log.Println("Shutdown signal received")
-			app.Shutdown()
-			routes.Shutdown()
-			log.Println("Shutdown success!")
-			logs.Shutdown()
-			os.Exit(0)
-		default:
-		}
-	}
+
+	<-stopSignal
+	log.Println("Shutdown signal received")
+	app.Shutdown()
+	routes.Shutdown()
+	log.Println("Shutdown success!")
+	logs.Shutdown()
+	os.Exit(0)
 }
 
 func setupLog() {

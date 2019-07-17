@@ -17,5 +17,7 @@ sed -i "s/%smtpServerPort%/${SMTP_PORT}/g" /etc/home-page-back/mail.json
 sed -i "s/%contactTeamEmail%/${EMAIL}/g" /etc/home-page-back/mail.json
 sed -i "s/%contactTeamPassword%/${PASSWORD}/g" /etc/home-page-back/mail.json
 
+service home-page-back start
+
 sleep infinity
 exec "$@"
