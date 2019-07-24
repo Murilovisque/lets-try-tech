@@ -1,0 +1,22 @@
+server {
+	listen 80 default_server;
+	listen [::]:80 default_server;
+
+	root /opt/ltt/home-page-front;
+	index index.html index.htm;
+	server_name localhost;
+
+	location / {
+		proxy_set_header Host $host;
+		proxy_set_header Upgrade    $http_upgrade;
+        proxy_set_header Connection $http_connection;
+		proxy_pass http://localhost:4200;
+		
+	}
+
+	location /api {
+		rewrite /api/(.*) /$1  break;
+		proxy_redirect     off;
+		proxy_pass http://localhost:8080;		
+	}
+}

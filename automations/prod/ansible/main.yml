@@ -53,7 +53,9 @@
       apt: deb=/tmp/home-page-back.deb
     - name: Remove deb file
       file: path=/tmp/home-page-back.deb state=absent
-      notify: "restart home-page-back"
+      notify:
+      - restart home-page-back
+      - restart cron
     tags: [home-page-back]
 
   - block:
@@ -78,3 +80,5 @@
     service: name=nginx state=restarted
   - name: restart home-page-back
     service: name=home-page-back state=restarted
+  - name: restart cron
+    service: name=cron status=restarted

@@ -2,18 +2,18 @@
   <section>
     <h2>Fale conosco</h2>
     <label>
-      Nome:<input type="text" />
+      Nome:<input type="text" (input)="name" />
     </label>
     <label>
-      Email:<input type="email" />
+      Email:<input type="email" (input)="email" />
     </label>
     <label>
-      Telefone:<input type="tel" />
+      Telefone:<input type="tel" (input)="tel" />
     </label>
     <label>
-      Mensagem:<textarea></textarea>
+      Mensagem:<textarea (input)="message"></textarea>
     </label>
     <button class="button-fechar" (click)="closePage.emit()">Fechar</button>
-    <button class="button-enviar">Enviar</button>
+    <button class="button-enviar" (click)="sendContactUsMessage()">Enviar</button>
   </section>
 </div>

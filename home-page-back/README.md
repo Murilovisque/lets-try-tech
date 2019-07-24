@@ -17,6 +17,12 @@ docker exec -it home-page-back bash
 
 ## Compilar e gerar o executável do projeto
 
+Executar o comando abaixo no container docker para iniciar o projeto
+```
+cd /home-page-back/cmd/home-page
+go run main.go
+```
+
 Executar o comando abaixo no container docker. Irá gerar um arquivo executável de nome 'home-page'
 ```
 cd /home-page-back/cmd/home-page
