@@ -87,7 +87,7 @@ func TestShutdownWaitAllProcessFinish(t *testing.T) {
 func TestProcessContactUsMessageReceivedShouldReturnBadRequestWhenArgsAreInvalid(t *testing.T) {
 	setupMocks(t)
 	var err error
-	checker := comparisonErrApp(func() error { return err }, http.StatusBadRequest, "Nome, telefone, email ou mensagem inválidos")
+	checker := comparisonErrApp(func() error { return err }, http.StatusBadRequest, "Nome, telefone, email ou mensagem devem ser válidos")
 	err = ProcessContactUsMessageReceived("", expectedTel, expectedEmail, expectedMessage)
 	assert.Assert(t, checker)
 	err = ProcessContactUsMessageReceived(expectedName, 1, expectedEmail, expectedMessage)

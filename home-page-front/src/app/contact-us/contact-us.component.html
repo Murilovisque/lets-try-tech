@@ -1,19 +1,23 @@
-<div>
+<div class="contact-us-container">
   <section>
     <h2>Fale conosco</h2>
     <label>
-      Nome:<input type="text" (input)="name" />
+      Nome:<input type="text" (input)="name=$event.target.value" (focus)="clearFormMessage()" />
     </label>
     <label>
-      Email:<input type="email" (input)="email" />
+      Email:<input type="email" (input)="email=$event.target.value" (focus)="clearFormMessage()" />
     </label>
     <label>
-      Telefone:<input type="tel" (input)="tel" />
+      Telefone:<input type="tel" (input)="setTel($event.target)" (focus)="clearFormMessage()" />
     </label>
     <label>
-      Mensagem:<textarea (input)="message"></textarea>
+      Mensagem:<textarea (input)="message=$event.target.value" (focus)="clearFormMessage()"></textarea>
     </label>
-    <button class="button-fechar" (click)="closePage.emit()">Fechar</button>
-    <button class="button-enviar" (click)="sendContactUsMessage()">Enviar</button>
+    
+    <button *ngIf="formMessage == null" class="button-enviar" (click)="sendContactUsMessage()">Enviar</button>
+    <button *ngIf="formMessage == null" class="button-fechar" (click)="closePopup(true)">Fechar</button>    
+    <div *ngIf="formMessage != null" class="form-message-container" [style.background-color]="formMessage.color" (click)="closePopup()">
+      <p>{{ formMessage.msg }}</p>
+    </div>    
   </section>
 </div>

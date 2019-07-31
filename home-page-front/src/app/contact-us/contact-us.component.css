@@ -62,7 +62,7 @@ button {
     background-color: #ec6048;
 }
 
-div {
+.contact-us-container {
     display : block; 
     width: 100%;    
     height: 100%;
@@ -70,4 +70,20 @@ div {
     position : fixed;
     top : 0;
     z-index : 500;
+}
+
+.form-message-container {
+    display: inline-block;
+    width: 90%;
+    border-radius: 15px;
+    margin: 2% 5% 3% 5%;
+}
+
+p {    
+    text-align: center;
+    font-family: 'Roboto';    
+    font-size: 1.1em;
+    font-weight: bold;
+    padding: 0.5em;
+    color:white;
 }

@@ -98,7 +98,7 @@ func ProcessContactUsMessageReceived(name string, tel uint, email, message strin
 	}
 	defer processCounter.DecrementProcess()
 	if telLength := len(fmt.Sprint(tel)); strings.TrimSpace(name) == "" || telLength < 10 || telLength > 11 || strings.TrimSpace(message) == "" || !regexp.MustCompile(".+@.+").MatchString(email) {
-		return &ErrApp{http.StatusBadRequest, "Nome, telefone, email ou mensagem inválidos"}
+		return &ErrApp{http.StatusBadRequest, "Nome, telefone, email ou mensagem devem ser válidos"}
 	}
 	c := customers.CustomerMessage{
 		Name:    name,
