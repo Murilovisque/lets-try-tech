@@ -38,18 +38,17 @@ section {
     border-radius: 15px;
     background-color: white;
     width: 20em;
-    height:31.3em;
+    height: auto;
     margin: 5% auto 0 auto;
     padding-top: 1em;
 }
 
 button {
     border-radius: 15px;
-    
     border: 0;
     width: 44%;
     height: 2em;
-    margin: 5% 2.75% 0% 2.75%;
+    margin: 5% 2.75% 4% 2.75%;
     font-size: 1.1em;
     color: white;   
 }
@@ -76,7 +75,7 @@ button {
     display: inline-block;
     width: 90%;
     border-radius: 15px;
-    margin: 2% 5% 3% 5%;
+    margin: 2% 5% 4% 5%;
 }
 
 p {    

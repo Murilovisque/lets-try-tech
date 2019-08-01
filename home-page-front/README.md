@@ -7,14 +7,9 @@ Este projeto foi gerado com o angular-cli [Angular CLI](https://github.com/angul
 
 ## Criar o ambiente via docker
 
-Executar os comandos abaixo para iniciar o container em background
+Executar os comandos abaixo para iniciar o container em background e acessá-lo
 ```
 ./extras/docker/run_docker.sh
-```
-
-## Acessar o container docker
-```
-docker exec -it home-page-front bash
 ```
 
 ## Executar o servidor em modo desenvolvimento

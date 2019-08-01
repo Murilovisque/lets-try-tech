@@ -5,25 +5,19 @@
 
 ## Criar o ambiente via docker
 
-Executar o comando abaixo para iniciar o container em background na raiz do projeto home-page-back
+Executar o comando abaixo para iniciar o container em background na raiz do projeto home-page-back e acessá-lo
 ```
 ./extras/docker/run_docker.sh
-```
-
-## Acessar o container docker
-```
-docker exec -it home-page-back bash
 ```
 
 ## Compilar e gerar o executável do projeto
 
 Executar o comando abaixo no container docker para iniciar o projeto
 ```
-cd /home-page-back/cmd/home-page
-go run main.go
+go run /home-page-back/cmd/home-page-back/main.go
 ```
 
-Executar o comando abaixo no container docker. Irá gerar um arquivo executável de nome 'home-page'
+Executar os comandos abaixo no container docker. Irá gerar um arquivo executável de nome 'home-page'
 ```
 cd /home-page-back/cmd/home-page
 go build
