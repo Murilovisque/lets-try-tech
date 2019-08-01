@@ -14,7 +14,7 @@ export class ContactUsComponent implements OnInit {
 	closePage = new EventEmitter<any>()
   	name: string
   	email: string
-  	tel: number
+  	tel: string
 	message: string
 	formMessage: FormMessage
 
@@ -23,7 +23,8 @@ export class ContactUsComponent implements OnInit {
 	ngOnInit() { }
 
 	sendContactUsMessage(): void {
-		this.customersService.sendContactUsMessage(this.name, this.tel, this.email, this.message).subscribe(
+		let telNum = Number(this.tel.replace(/[^0-9]/g, ""))
+		this.customersService.sendContactUsMessage(this.name, telNum, this.email, this.message).subscribe(
 			() => this.formMessage = new FormMessage("Obrigado pelo seu contato. Clique para fechar", MessageType.OK),
 			(err) => {
 				if (err instanceof BadRequestError)
@@ -46,10 +47,10 @@ export class ContactUsComponent implements OnInit {
 	}
 
 	setTel(newTel: any): void {
-		if (/^\d+$/.test(newTel.value))
-			this.tel = Number(newTel.value)
+		if (/^(\d|\(|\)|\-)+$/.test(newTel.value))
+			this.tel = newTel.value
 		else
-			newTel.value = this.tel == null ? "":  this.tel
+			newTel.value = this.tel == null || newTel.value == "" ? "":  this.tel
 	}
 }
 

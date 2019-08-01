@@ -8,7 +8,7 @@
       Email:<input type="email" (input)="email=$event.target.value" (focus)="clearFormMessage()" />
     </label>
     <label>
-      Telefone:<input type="tel" (input)="setTel($event.target)" (focus)="clearFormMessage()" />
+      Telefone:<input mask="(00)000000009" type="tel" (input)="setTel($event.target)" (focus)="clearFormMessage()" />
     </label>
     <label>
       Mensagem:<textarea (input)="message=$event.target.value" (focus)="clearFormMessage()"></textarea>
