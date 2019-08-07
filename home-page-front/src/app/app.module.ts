@@ -1,7 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpClientModule } from '@angular/common/http';
-import {NgxMaskModule, IConfig} from 'ngx-mask'
+import { NgxMaskModule, IConfig } from 'ngx-mask';
+import { AutofocusModule } from 'angular-autofocus-fix';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -27,6 +28,7 @@ export var options: Partial<IConfig> | (() => Partial<IConfig>);
     AppRoutingModule,
     HttpClientModule,
     NgxMaskModule.forRoot(options),
+    AutofocusModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

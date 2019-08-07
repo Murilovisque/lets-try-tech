@@ -1,6 +1,5 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { CustomersService } from '../services/customers.service';
-import { HttpBackend } from '@angular/common/http';
 import { BadRequestError, HomePageError } from '../errors/error';
 
 @Component({
@@ -20,22 +19,22 @@ export class ContactUsComponent implements OnInit {
 
 	constructor(private customersService: CustomersService) { }	
 
-	ngOnInit() { }
+	ngOnInit() {}
 
 	sendContactUsMessage(): void {
-		let telNum = Number(this.tel.replace(/[^0-9]/g, ""))
+		let telNum = this.tel != null ? Number(this.tel.replace(/[^0-9]/g, "")) : null;
 		this.customersService.sendContactUsMessage(this.name, telNum, this.email, this.message).subscribe(
 			() => this.formMessage = new FormMessage("Obrigado pelo seu contato. Clique para fechar", MessageType.OK),
 			(err) => {
 				if (err instanceof BadRequestError)
 					this.formMessage = new FormMessage(err.message, MessageType.ERROR)
 				else
-					this.formMessage = new FormMessage((err as HomePageError).message, MessageType.FATAL)
+					this.formMessage = new FormMessage((err as HomePageError).message + ". Clique para fechar", MessageType.FATAL)
 			}
 		)
 	}
 
-	clearFormMessage(): void {
+	clearFormMessage(element?: any): void {
 		this.formMessage = null
 	}
 
@@ -45,15 +44,7 @@ export class ContactUsComponent implements OnInit {
 		else if (this.formMessage != null && (this.formMessage.type == MessageType.OK || this.formMessage.type == MessageType.FATAL))
 			this.closePage.emit()
 	}
-
-	setTel(newTel: any): void {
-		if (/^(\d|\(|\)|\-)+$/.test(newTel.value))
-			this.tel = newTel.value
-		else
-			newTel.value = this.tel == null || newTel.value == "" ? "":  this.tel
-	}
 }
-
 
 class FormMessage {
 	msg: string

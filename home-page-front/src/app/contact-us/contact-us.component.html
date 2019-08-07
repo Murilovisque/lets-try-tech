@@ -2,20 +2,20 @@
   <section>
     <h2>Fale conosco</h2>
     <label>
-      Nome:<input type="text" (input)="name=$event.target.value" (focus)="clearFormMessage()" />
+      Nome:<input type="text" (input)="name=$event.target.value" (focus)="clearFormMessage()" autofocus />
     </label>
     <label>
       Email:<input type="email" (input)="email=$event.target.value" (focus)="clearFormMessage()" />
     </label>
     <label>
-      Telefone:<input mask="(00)000000009" type="tel" (input)="setTel($event.target)" (focus)="clearFormMessage()" />
+      Telefone:<input mask="(00) 000000009" type="tel" (input)="tel=$event.target.value" (focus)="clearFormMessage()" />
     </label>
     <label>
       Mensagem:<textarea (input)="message=$event.target.value" (focus)="clearFormMessage()"></textarea>
     </label>
     
     <button *ngIf="formMessage == null" class="button-enviar" (click)="sendContactUsMessage()">Enviar</button>
-    <button *ngIf="formMessage == null" class="button-fechar" (click)="closePopup(true)">Fechar</button>    
+    <button *ngIf="formMessage == null" class="button-fechar" (click)="closePopup(true)">Fechar</button>
     <div *ngIf="formMessage != null" class="form-message-container" [style.background-color]="formMessage.color" (click)="closePopup()">
       <p>{{ formMessage.msg }}</p>
     </div>    
