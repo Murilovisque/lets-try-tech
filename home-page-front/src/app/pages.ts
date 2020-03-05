@@ -1,7 +1,6 @@
 import { Routes, Router } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { MembersComponent } from './members/members.component';
-import { ContactUsComponent } from './contact-us/contact-us.component';
 
 export class Pages {
     static readonly HOME_PATH = "home"

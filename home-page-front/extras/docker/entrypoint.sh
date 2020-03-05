@@ -12,4 +12,3 @@ ln -s /etc/nginx/sites-available/home-page /etc/nginx/sites-enabled/home-page
 service nginx start
 
 sleep infinity
-exec "$@"
